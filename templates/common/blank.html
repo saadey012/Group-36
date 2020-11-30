@@ -1,0 +1,148 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <title>Listing</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico"/>
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&amp;display=swap" rel="stylesheet">
+    <link href="{%static '' %}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{%static '' %}vendor/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+    <link href="{%static '' %}vendor/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{%static '' %}vendor/assets/css/forms/theme-checkbox-radio.css">
+    <link href="{%static '' %}vendor/assets/css/tables/table-basic.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL CUSTOM STYLES -->
+</head>
+<body class="sidebar-noneoverflow" data-spy="scroll" data-target="#navSection" data-offset="140">
+ 
+
+    <!--  BEGIN MAIN CONTAINER  -->
+    <div class="main-container" id="container">
+
+        <div class="overlay"></div>
+        <div class="search-overlay"></div>
+
+
+    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="{%static '' %}vendor/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="{%static '' %}vendor/bootstrap/js/popper.min.js"></script>
+    <script src="{%static '' %}vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{%static '' %}vendor/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="{%static '' %}vendor/assets/js/app.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            App.init();
+        });
+    </script>
+    <script src="{%static '' %}vendor/plugins/highlight/highlight.pack.js"></script>
+    <script src="{%static '' %}vendor/assets/js/custom.js"></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+
+    <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+    <script src="{%static '' %}vendor/assets/js/scrollspyNav.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+        checkall('todoAll', 'todochkbox');
+        $('[data-toggle="tooltip"]').tooltip()
+    </script>
+
+    <script>
+       var DeletePatient = (id)=>{
+        console.log(id);
+            swal({
+      title: "Are you sure?",
+      text: "You are about to Delete the patient Data,Are you sure?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+        console.log(willDelete);
+      if (willDelete) {
+        $.post( "{% url 'table' %}", {type:"delete", id,csrfmiddlewaretoken: '{{ csrf_token }}'})
+            .done(function( data ) {
+    
+    
+            })
+      }
+      document.location.reload()
+      })
+          
+         
+       }
+    </script>
+
+    <script>
+
+  $('form').submit(function (ev) {
+    
+    
+    $('button').prop('disabled',true)
+    
+    ev.preventDefault();
+    
+    if (this.method != 'get'){
+    var formData = new FormData($(this)[0]);
+    
+    
+    
+    $.ajax({
+    type: 'POST',
+    url: "{%url 'table'%}",
+    data: formData,
+    async: true,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (data) {
+    
+    $('button').prop('disabled',false)
+    
+    console.log(data)
+    
+    if (data.status=='success'){
+       
+    swal({  
+        text: data.message,        
+        icon: "success",
+        timer: 3000,
+        }).then(function () { window.location= '{%url "table"%}'}, 2000)
+    }
+    else{
+        swal({  
+        text: data.message,        
+        icon: "warning",
+        timer: 3000,
+        })
+    }
+    
+    
+    
+    }
+    
+    });
+    
+    
+    }
+    else{
+    
+    this.submit()
+    
+    }
+    
+    
+    
+    });
+    
+   
+    </script>
+    <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
+</body>
+</html>
