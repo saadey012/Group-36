@@ -1,0 +1,275 @@
+{%extends 'common/base.html'%}
+{%load static%}
+{%block dactive %}active {%endblock%}
+
+{%block container%}
+    <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;" role="document">
+            <div class="modal-content">
+                <div class="modal-body">         
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                <h4>Add Doctor</h4>
+                            </div>                                                                        
+                        </div>
+                    </div>
+                    <div class="widget-content widget-content-area">
+                        <form id="add_vendor_form" method="POST">
+                            {%csrf_token%}
+                            <input type="hidden" name="type" value="add">
+                          
+                            <div class="form-row mb-4">
+                                
+                                <div class="form-group col-md-6">
+                                    <label for="user_id">User Id</label>
+                                    <input  type="text" name="user_id" class="form-control" id="user_id">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="user_name">First Name</label>
+                                    <input  type="text" name="user_name" class="form-control" id="user_name">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="user_last_name"> Last Name</label>
+                                    <input  type="text" name="user_last_name" class="form-control" id="user_last_name" >
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="user_address">Address</label>
+                                  <textarea  id="user_address" name="user_address" class="form-control"></textarea>
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="user_phone">Phone Number</label>
+                                    <input type="number" name="user_phone" class="form-control" id="user_phone">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="user_birtday">Birth Day</label>
+                                    <input type="date" name="user_birtday" class="form-control" id="user_birtday">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="salary">salary</label>
+                                    <input type="number" name="salary" class="form-control" id="salary">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="user_status"> Status</label>
+                                    <select class="form-control" name="user_status" id="user_status">
+                                        <option value="">Please select</option>
+                                        <option value="G">Good</option>
+                                        <option value="NG">Not Good</option>
+
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group col-md-6">
+                                    <label for="password">Password</label>
+                                    <input type="password" name="password" class="form-control" id="password">
+                                </div>
+                             
+                            </div>
+                           
+                            <button id="btn-edit" type="submit" class="float-left btn primary">Submit</button>
+    
+                            <button style="margin-left: 20px;" class="btn" data-dismiss="modal"> <i class="flaticon-delete-1"></i> Discard</button>
+                        </form>
+                    </div>   
+                </div>
+                
+            </div>
+        </div>
+    </div>
+ 
+    <!--  BEGIN MAIN CONTAINER  -->
+    <div class="main-container" id="container">
+
+        <div class="overlay"></div>
+        <div class="search-overlay"></div>
+
+     
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            
+            <div class="container" style="max-width: 100% !important;">
+                <div class="container">
+
+                 
+
+                    <div class="row layout-top-spacing">
+                      
+                        
+                        <div id="tableHover" class="col-lg-12 col-12 layout-spacing">
+                            <div class="statbox widget box box-shadow">
+                                <div class="widget-header">
+                                    <div class="row">
+                                        <div class="col-xl-10 col-md-10 col-sm-10 col-10">
+                                            <h4>Doctors</h4>
+                                        </div> 
+                                        <div class="col-2 pt-3">
+                                            <button data-toggle="modal" data-target="#addContactModal" class="btn btn-light-default" style="float: right;"> + Add Doctor</button>
+
+                                        </div>    
+
+                                    </div>
+                                </div>
+                                <div class="widget-content widget-content-area">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover mb-4">
+                                            <thead>
+                                                <tr>
+                                                    <th>User ID</th>
+                                                    <th>First Name</th>
+                                                   
+                                                    <th>Last Name</th>
+                                                    <th>Adress</th>
+                                                    <th>Phone Number</th>
+
+
+                                                    
+                                                    
+                                                    <th class="text-center">Status</th>
+                                                    <th>Added Date</th>
+
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {%for p in doctors%}
+                                                <tr>
+                                                    <td>{{p.user_id}}</td>
+                                                    <td>{{p.user_name}}</td>
+                                                    <td>{{p.user_last_name}}</td>
+                                                    <td>{{p.user_address}}</td>
+                                                    <td>{{p.user_phone}}</td>
+
+                                                    <td class="text-center"><span class="text-success">{{p.get_user_status_display}}</span></td>
+                                                    <td>{{p.added|date:"D d M Y"}}</td>
+
+                                                    <td class="text-center" ><svg onclick="DeletePatient({{p.id}})" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></td>
+                                                </tr>
+                                              {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                
+
+                                </div>
+                            </div>
+                        </div>
+                    
+
+                     
+
+                    </div>
+
+                </div>
+                </div>
+      
+        </div>
+        <!--  END CONTENT AREA  -->
+
+    </div>
+    <!-- END MAIN CONTAINER -->
+
+    {%endblock%}
+    
+ 
+{%block extrajs%}
+
+    <script>
+        checkall('todoAll', 'todochkbox');
+        $('[data-toggle="tooltip"]').tooltip()
+    </script>
+
+    <script>
+       var DeletePatient = (id)=>{
+        console.log(id);
+            swal({
+      title: "Are you sure?",
+      text: "You are about to Delete the User Data,Are you sure?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+        console.log(willDelete);
+      if (willDelete) {
+        $.post( "{% url 'doctors' %}", {type:"delete", id,csrfmiddlewaretoken: '{{ csrf_token }}'})
+            .done(function( data ) {
+    
+    
+            })
+      }
+      document.location.reload()
+      })
+          
+         
+       }
+    </script>
+
+    <script>
+
+  $('form').submit(function (ev) {
+    
+    
+    $('button').prop('disabled',true)
+    
+    ev.preventDefault();
+    
+    if (this.method != 'get'){
+    var formData = new FormData($(this)[0]);
+    
+    
+    
+    $.ajax({
+    type: 'POST',
+    url: "{%url 'doctors'%}",
+    data: formData,
+    async: true,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (data) {
+    
+    $('button').prop('disabled',false)
+    
+    console.log(data)
+    
+    if (data.status=='success'){
+       
+    swal({  
+        text: data.message,        
+        icon: "success",
+        timer: 3000,
+        }).then(function () { window.location= '{%url "doctors"%}'}, 2000)
+    }
+    else{
+        swal({  
+        text: data.message,        
+        icon: "warning",
+        timer: 3000,
+        })
+    }
+    
+    
+    
+    }
+    
+    });
+    
+    
+    }
+    else{
+    
+    this.submit()
+    
+    }
+    
+    
+    
+    });
+    
+   
+    </script>
+    <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
+    {%endblock%}
